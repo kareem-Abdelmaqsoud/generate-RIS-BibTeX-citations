@@ -15,5 +15,5 @@ jobs:
     steps:      
       - uses: actions/checkout@v3
       - run: |
-          pip3 install matplotlib requests IPython pytest
+          pip3 install matplotlib requests IPython pytest bibtexparser
           python3 -m pytest 
