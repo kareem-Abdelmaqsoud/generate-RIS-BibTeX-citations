@@ -2,9 +2,11 @@ name: First job
 on: push
 
 jobs:
-  my_first_job:
+
+  my_third_job:
     runs-on: ubuntu-latest
-    steps:
+    steps:      
+      - uses: actions/checkout@v3
       - run: |
-          pwd 
-          ls -alF
+          pip install black
+          black --check .
