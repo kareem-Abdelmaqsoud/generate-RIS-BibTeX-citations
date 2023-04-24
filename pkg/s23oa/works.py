@@ -124,15 +124,15 @@ class Works:
 
         display(HTML(uri))
         return ris
-    
+
     def related_works(self):
         rworks = []
-        for rw_url in self.data['related_works']:
+        for rw_url in self.data["related_works"]:
             rw = Works(rw_url)
             rworks += [rw]
             time.sleep(0.101)
         return rworks
-    
+
     def citing_works(self):
         citations_json = requests.get(self.data["cited_by_api_url"]).json()
         citing_papers = citations_json["results"]
@@ -141,57 +141,61 @@ class Works:
             print("Doi:", paper["doi"])
             print("Publication_year:", paper["publication_year"])
             print("\n")
-            
+
     def references(self):
         for i, url in enumerate(self.data["referenced_works"]):
             time.sleep(0.101)
             paper_id = url[21:]
-            referenced_paper = requests.get(f"https://api.openalex.org/works/{paper_id}").json()
+            referenced_paper = requests.get(
+                f"https://api.openalex.org/works/{paper_id}"
+            ).json()
             print(f'{i+1:2d}- Title:{referenced_paper["title"]}')
             print("Doi:", referenced_paper["doi"])
             print("Publication_year:", referenced_paper["publication_year"])
             print("\n")
-    
-
 
     def bibtex(self):
-        year = self.data['publication_year']
-        _authors = [au['author']['display_name'] for au in self.data['authorships']]
+        year = self.data["publication_year"]
+        _authors = [au["author"]["display_name"] for au in self.data["authorships"]]
         if len(_authors) == 1:
             authors = _authors[0]
         else:
-            authors = ', '.join(_authors[0:-1]) + ' and ' + _authors[-1]
-            
-            
-            
-        title = self.data['title']
-        
-        journal = self.data['host_venue']['display_name']
-        volume = self.data['biblio']['volume']
-        issue = self.data['biblio']['issue']
+            authors = ", ".join(_authors[0:-1]) + " and " + _authors[-1]
+
+        title = self.data["title"]
+
+        journal = self.data["host_venue"]["display_name"]
+        volume = self.data["biblio"]["volume"]
+        issue = self.data["biblio"]["issue"]
         if issue is None:
-            issue = ', '
+            issue = ", "
         else:
-            issue = ', ' + issue
+            issue = ", " + issue
 
-        pages = '-'.join([self.data['biblio'].get('first_page', '') or '',
-                          self.data['biblio'].get('last_page', '') or ''])
+        pages = "-".join(
+            [
+                self.data["biblio"].get("first_page", "") or "",
+                self.data["biblio"].get("last_page", "") or "",
+            ]
+        )
 
-        
-        oa = self.data['id']
-        
+        oa = self.data["id"]
+
         db = BibDatabase()
-        db.entries =     [
-        {'journal': journal,
-         'pages': str(pages),
-         'title': title,
-         'year': str(year),
-         'volume': str(volume),
-         'ID': authors.split()[-1]+str(year),
-         'author': authors,
-         'doi': self.data["doi"],
-         'ENTRYTYPE': self.data['type']}]
+        db.entries = [
+            {
+                "journal": journal,
+                "pages": str(pages),
+                "title": title,
+                "year": str(year),
+                "volume": str(volume),
+                "ID": authors.split()[-1] + str(year),
+                "author": authors,
+                "doi": self.data["doi"],
+                "ENTRYTYPE": self.data["type"],
+            }
+        ]
         writer = BibTexWriter()
-        writer.indent = '    '     # indent entries with 4 spaces instead of one
+        writer.indent = "    "  # indent entries with 4 spaces instead of one
         writer.comma_first = False  # place the comma at the beginning of the line
         print(writer.write(db))
