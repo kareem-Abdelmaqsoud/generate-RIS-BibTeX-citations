@@ -1,0 +1,3 @@
+[console_scripts]
+s23oa = s23oa.main:main
+

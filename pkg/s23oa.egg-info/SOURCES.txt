@@ -1,0 +1,11 @@
+setup.py
+s23oa/__init__.py
+s23oa/main.py
+s23oa/test_bibtex.py
+s23oa/test_ris.py
+s23oa/works.py
+s23oa.egg-info/PKG-INFO
+s23oa.egg-info/SOURCES.txt
+s23oa.egg-info/dependency_links.txt
+s23oa.egg-info/entry_points.txt
+s23oa.egg-info/top_level.txt

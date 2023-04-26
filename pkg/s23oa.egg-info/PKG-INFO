@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: s23oa
+Version: 0.0.1
+Summary: OpenAlex utilities
+Home-page: UNKNOWN
+Maintainer: Kareem Abdelmaqsoud
+Maintainer-email: kabdelma@andrew.cmu.edu
+License: MIT
+Platform: UNKNOWN
+
+A set of OpenAlex utilities
+
