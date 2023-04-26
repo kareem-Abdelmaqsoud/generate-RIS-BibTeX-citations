@@ -11,6 +11,7 @@ from bibtexparser.bibdatabase import BibDatabase
 
 class Works:
     """A works class that returns the RIS and BIBTEX"""
+
     def __init__(self, oaid):
         """Initalize variables"""
         self.oaid = oaid
@@ -23,8 +24,7 @@ class Works:
 
     def __repr__(self):
         """Returns a representation"""
-        _authors = [au["author"]["display_name"]
-                    for au in self.data["authorships"]]
+        _authors = [au["author"]["display_name"] for au in self.data["authorships"]]
         if len(_authors) == 1:
             authors = _authors[0]
         else:
@@ -41,15 +41,16 @@ class Works:
         else:
             issue = ", " + issue
 
-        pages = "-".join([self.data["biblio"]["first_page"],
-                          self.data["biblio"]["last_page"]])
+        pages = "-".join(
+            [self.data["biblio"]["first_page"], self.data["biblio"]["last_page"]]
+        )
         year = self.data["publication_year"]
         citedby = self.data["cited_by_count"]
 
         o_a = self.data["id"]
-        s_s = '{}, {}, {}{}{}, ({}), {}. cited by: {}. {}'.format(
-    authors, title, volume, issue, pages, year, self.data["doi"], citedby, o_a
-)
+        s_s = "{}, {}, {}{}{}, ({}), {}. cited by: {}. {}".format(
+            authors, title, volume, issue, pages, year, self.data["doi"], citedby, o_a
+        )
         return s_s
 
     def _repr_markdown_(self):
@@ -74,8 +75,9 @@ class Works:
         else:
             issue = ", " + issue
 
-        pages = "-".join([self.data["biblio"]["first_page"],
-                          self.data["biblio"]["last_page"]])
+        pages = "-".join(
+            [self.data["biblio"]["first_page"], self.data["biblio"]["last_page"]]
+        )
         year = self.data["publication_year"]
         citedby = self.data["cited_by_count"]
 
@@ -95,9 +97,20 @@ class Works:
         b64 = base64.b64encode(data).decode("utf8")
         citefig = f"![img](data:image/png;base64,{b64})"
 
-        s_s = '{}, *{}*, **{}**, {}{}{}, ({}), {}. cited by: {}. [Open Alex]({})'.format(
-    authors, title, journal, volume, issue, pages, year, self.data["doi"], citedby, o_a
-)
+        s_s = (
+            "{}, *{}*, **{}**, {}{}{}, ({}), {}. cited by: {}. [Open Alex]({})".format(
+                authors,
+                title,
+                journal,
+                volume,
+                issue,
+                pages,
+                year,
+                self.data["doi"],
+                citedby,
+                o_a,
+            )
+        )
 
         s_s += "<br>" + citefig
         return s_s
@@ -162,13 +175,12 @@ class Works:
             print("Doi:", referenced_paper["doi"])
             print("Publication_year:", referenced_paper["publication_year"])
             print("\n")
-            
+
     @property
     def bibtex(self):
         """Returns a bibtex entry"""
         year = self.data["publication_year"]
-        _authors = [au["author"]["display_name"]
-                    for au in self.data["authorships"]]
+        _authors = [au["author"]["display_name"] for au in self.data["authorships"]]
         if len(_authors) == 1:
             authors = _authors[0]
         else:
@@ -190,7 +202,6 @@ class Works:
                 self.data["biblio"].get("last_page", "") or "",
             ]
         )
-
 
         db = BibDatabase()
         db.entries = [
