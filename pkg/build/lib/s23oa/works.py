@@ -1,8 +1,8 @@
 """A class that returns citation information of a particular paper"""
 
-import requests
 import base64
-
+import time
+import requests
 import matplotlib.pyplot as plt
 from IPython.core.pylabtools import print_figure
 from bibtexparser.bwriter import BibTexWriter
@@ -32,7 +32,6 @@ class Works:
 
         title = self.data["title"]
 
-        journal = self.data["host_venue"]["display_name"]
         volume = self.data["biblio"]["volume"]
 
         issue = self.data["biblio"]["issue"]
@@ -63,55 +62,50 @@ class Works:
             authors = _authors[0]
         else:
             authors = ", ".join(_authors[0:-1]) + " and " + _authors[-1]
-
-        title = self.data["title"]
-
+        dictionary = {
+            "title": self.data["title"],
+            "volume": self.data["biblio"]["volume"],
+            "pages": "-".join(
+                [self.data["biblio"]["first_page"], self.data["biblio"]["last_page"]]
+            ),
+            "year": self.data["publication_year"],
+            "citedby": self.data["cited_by_count"],
+            "o_a": self.data["id"],
+        }
         journal = f"[{self.data['host_venue']['display_name']}]({self.data['host_venue']['id']})"
-        volume = self.data["biblio"]["volume"]
-
         issue = self.data["biblio"]["issue"]
         if issue is None:
             issue = ", "
         else:
             issue = ", " + issue
 
-        pages = "-".join(
-            [self.data["biblio"]["first_page"], self.data["biblio"]["last_page"]]
-        )
-        year = self.data["publication_year"]
-        citedby = self.data["cited_by_count"]
-
-        o_a = self.data["id"]
-
         # Citation counts by year
         years = [e["year"] for e in self.data["counts_by_year"]]
         counts = [e["cited_by_count"] for e in self.data["counts_by_year"]]
 
-        fig, ax = plt.subplots()
-        ax.bar(years, counts)
-        ax.set_xlabel("year")
-        ax.set_ylabel("citation count")
+        fig, a_x = plt.subplots()
+        a_x.bar(years, counts)
+        a_x.set_xlabel("year")
+        a_x.set_ylabel("citation count")
         data = print_figure(fig, "png")  # save figure in string
         plt.close(fig)
 
         b64 = base64.b64encode(data).decode("utf8")
         citefig = f"![img](data:image/png;base64,{b64})"
-
         s_s = (
             "{}, *{}*, **{}**, {}{}{}, ({}), {}. cited by: {}. [Open Alex]({})".format(
                 authors,
-                title,
+                dictionary["title"],
                 journal,
-                volume,
+                dictionary["volume"],
                 issue,
-                pages,
-                year,
+                dictionary["pages"],
+                dictionary["year"],
                 self.data["doi"],
-                citedby,
-                o_a,
+                dictionary["citedby"],
+                dictionary["o_a"],
             )
         )
-
         s_s += "<br>" + citefig
         return s_s
 
@@ -148,8 +142,8 @@ class Works:
         """Returns a list of related works"""
         rworks = []
         for rw_url in self.data["related_works"]:
-            rw = Works(rw_url)
-            rworks += [rw]
+            r_w = Works(rw_url)
+            rworks += [r_w]
             time.sleep(0.101)
         return rworks
 
@@ -203,8 +197,8 @@ class Works:
             ]
         )
 
-        db = BibDatabase()
-        db.entries = [
+        d_b = BibDatabase()
+        d_b.entries = [
             {
                 "journal": journal,
                 "pages": str(pages),
@@ -220,4 +214,4 @@ class Works:
         writer = BibTexWriter()
         writer.indent = "    "  # indent entries with 4 spaces instead of one
         writer.comma_first = False  # place the comma at the beginning of the line
-        return writer.write(db)
+        return writer.write(d_b)

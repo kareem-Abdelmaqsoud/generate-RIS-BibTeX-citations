@@ -11,6 +11,6 @@ setup(
     license="MIT",
     packages=["s23oa"],
     scripts=[],
-    entry_points={'console_scripts': ['s23oa = s23oa.main:main']},
+    entry_points={"console_scripts": ["s23oa = s23oa.main:main"]},
     long_description="""A set of OpenAlex utilities""",
 )
